@@ -1,0 +1,12 @@
+{
+  "name": "fluxswap",
+  "private": true,
+  "scripts": {
+    "dev": "npm run dev --prefix platform",
+    "build": "npm run build --prefix platform",
+    "start": "npm run start --prefix platform"
+  },
+  "devDependencies": {
+    "next": "14.2.23"
+  }
+}

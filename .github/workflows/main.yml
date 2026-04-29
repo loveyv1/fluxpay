@@ -1,0 +1,57 @@
+name: StellarPay CI/CD
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: platform/package-lock.json
+
+      - name: Install Platform Dependencies
+        run: cd platform && npm ci
+
+      - name: Lint Platform
+        run: cd platform && npm run lint
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+          targets: wasm32-unknown-unknown
+
+      - name: Engine Tests
+        run: cd engine && cargo test --all
+
+  build:
+    needs: lint-and-test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: platform/package-lock.json
+
+      - name: Install Dependencies
+        run: cd platform && npm ci
+
+      - name: Build Platform
+        run: cd platform && npm run build
+        env:
+          NEXT_PUBLIC_HORIZON_URL: https://horizon-testnet.stellar.org
+          NEXT_PUBLIC_REX_ISSUER: GCNDTZPBGK5CBWN4BSCQRVC3UWQ7MXZJRVHFFUV5L65EUZFCW3YOBXG4
