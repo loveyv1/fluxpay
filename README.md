@@ -74,5 +74,5 @@ The system utilizes a unified `Makefile` for protocol lifecycle management:
 - `make setup`: Configures necessary asset trustlines on the network.
 
 ---
-© 2026 FluxSwap · Stellar Soroban · MIT License.
+© 2026 FluxSwap · Stellar Soroban · MIT License
 
